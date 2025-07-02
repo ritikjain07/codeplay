@@ -1,31 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link
-    rel="icon"
-    type="image/svg+xml"
-    href="/vite.svg"
-  />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>Vite + React</title>
-  <link
-    rel="stylesheet"
-    href="/cdn/@highlightjs/cdn-assets@11.9.0/styles/nord.min.css"
-  />
-  <script
-    crossorigin
-    src="/cdn/@highlightjs/cdn-assets@11.9.0/highlight.min.js"
-  ></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Favicon and App Icons -->
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Primary Meta Tags -->
+  <title>MasterAi - Collaborative Coding Platform</title>
+  <meta name="title" content="MasterAi - Collaborative Coding Platform">
+  <meta name="description" content="Seamlessly collaborate on coding projects in real-time with AI assistance and project management tools.">
+  
+  <!-- Preload Critical Assets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" integrity="sha512-rO+olRTkcf304DQBxSWxln8JXCzTHlKnIdnMUwYvQa9/Jd4cQaNkItIUj6Z4nvW1dqK0SKXLbn9h4KwZTNtAyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Theme Toggle Support -->
+  <script>
+    // Check for saved theme preference or use system preference
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (savedTheme === 'system' && prefersDark)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50 antialiased">
   <div id="root"></div>
-  <script
-    type="module"
-    src="/src/main.jsx"
-  ></script>
+  
+  <!-- App Entry Point -->
+  <script type="module" src="/src/main.jsx"></script>
+  
+  <!-- Highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <!-- Expose highlight.js to window object for easier access in components -->
+  <script>
+    window.hljs = hljs;
+  </script>
 </body>
 </html>

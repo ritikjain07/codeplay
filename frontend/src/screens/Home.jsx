@@ -18,28 +18,42 @@ const Home = () => {
     function createProject(e) {
         e.preventDefault()
         
+        // Only send name field as that's what backend expects
         axios.post('/projects/create', {
-            name: projectName,
-            description: projectDescription
+            name: projectName
         })
             .then((res) => {
-                setProjects([res.data.project, ...projects])
+                console.log('Project created:', res.data);
+                setProjects([res.data, ...projects])  // Fixed: res.data instead of res.data.project
                 setProjectName("")
                 setProjectDescription("")
                 setIsModalOpen(false)
             })
             .catch((error) => {
                 console.error("Error creating project:", error)
+                console.error("Error response:", error.response?.data)
+                // Check if it's an authentication error
+                if (error.response?.status === 401) {
+                    alert('Please log in again')
+                    // Redirect to login
+                    navigate('/login')
+                }
             })
     }
 
     useEffect(() => {
         setIsLoading(true)
         axios.get('/projects/all').then((res) => {
-            setProjects(res.data.projects)
+            console.log('Projects fetched:', res.data);
+            setProjects(res.data.projects || [])
             setIsLoading(false)
         }).catch(err => {
             console.error("Error fetching projects:", err)
+            console.error("Error response:", err.response?.data)
+            if (err.response?.status === 401) {
+                console.log('User not authenticated, redirecting to login');
+                navigate('/login')
+            }
             setIsLoading(false)
         })
     }, [])
@@ -141,12 +155,7 @@ const Home = () => {
                         {sortedProjects.map((project) => (
                             <div 
                                 key={project._id}
-                                onClick={() => {
-                                    navigate(`/project`, {
-                                        state: { project }
-                                    })
-                                }}
-                                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden cursor-pointer"
+                                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
                             >
                                 <div className="h-2 bg-gradient-to-r from-blue-500 to-purple-600"></div>
                                 <div className="p-6">
@@ -159,7 +168,7 @@ const Home = () => {
                                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
                                         {project.description || "No description provided"}
                                     </p>
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -177,6 +186,43 @@ const Home = () => {
                                                 })}
                                             </span>
                                         </div>
+                                    </div>
+                                    
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                navigate(`/project`, {
+                                                    state: { project }
+                                                })
+                                            }}
+                                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-200"
+                                        >
+                                            Original
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                navigate(`/project-improved`, {
+                                                    state: { project }
+                                                })
+                                            }}
+                                            className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-200"
+                                        >
+                                            Improved
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                navigate(`/project-simple`, {
+                                                    state: { project }
+                                                })
+                                            }}
+                                            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-200"
+                                        >
+                                            Simple
+                                        </button>
                                     </div>
                                 </div>
                             </div>
