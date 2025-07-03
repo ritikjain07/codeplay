@@ -6,7 +6,8 @@ import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
-import { getWebContainer } from '../config/webcontainer'
+// Use dynamic import to avoid build errors
+// import { getWebContainer } from '../config/webcontainer'
 import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css'
 
@@ -628,8 +629,11 @@ const ProjectImproved = () => {
 
         // Initialize WebContainer
         if (!webContainer) {
-            getWebContainer().then(container => {
-                setWebContainer(container)
+            // Dynamic import to avoid build issues
+            import('../config/webcontainer.js').then(module => {
+                module.getWebContainer().then(container => {
+                    setWebContainer(container)
+                })
             }).catch(err => {
                 console.error("Error initializing container:", err)
                 setLogs(prev => [...prev, `❌ Error initializing WebContainer: ${err.message}`])

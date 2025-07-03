@@ -10,7 +10,8 @@ import {
 import { Tooltip } from 'react-tooltip'
 import Markdown from 'markdown-to-jsx'
 import { sendMessage, receiveMessage, initializeSocket } from '../config/socket'
-import { getWebContainer } from '../config/webcontainer'
+// Use dynamic import to avoid build errors
+// import { getWebContainer } from '../config/webcontainer'
 
 const SimpleProject = () => {
     const location = useLocation()
@@ -188,8 +189,9 @@ const SimpleProject = () => {
     useEffect(() => {
         const init = async () => {
             try {
-                // Initialize WebContainer
-                const container = await getWebContainer()
+                // Initialize WebContainer with dynamic import
+                const webcontainerModule = await import('../config/webcontainer.js')
+                const container = await webcontainerModule.getWebContainer()
                 setWebContainer(container)
                 
                 // Initialize Socket
