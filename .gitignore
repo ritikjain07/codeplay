@@ -63,3 +63,4 @@ pids
 *.pid
 *.seed
 *.pid.lock
+.vercel
