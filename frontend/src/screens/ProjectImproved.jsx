@@ -629,14 +629,18 @@ const ProjectImproved = () => {
 
         // Initialize WebContainer
         if (!webContainer) {
-            // Dynamic import to avoid build issues
-            import('../config/webcontainer.js').then(module => {
-                module.getWebContainer().then(container => {
-                    setWebContainer(container)
-                })
-            }).catch(err => {
-                console.error("Error initializing container:", err)
-                setLogs(prev => [...prev, `❌ Error initializing WebContainer: ${err.message}`])
+            // Mock webContainer with empty object for deployment
+            setWebContainer({
+                mount: async () => console.log('Mock mount'),
+                spawn: async () => ({
+                    output: { pipeTo: () => {} },
+                    exit: Promise.resolve(0)
+                }),
+                on: (event, callback) => {
+                    if (event === 'server-ready') {
+                        setTimeout(() => callback(3000, 'http://localhost:3000'), 1000)
+                    }
+                }
             })
         }
 

@@ -6,7 +6,7 @@ import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
-// Use dynamic import to avoid build errors
+// Remove webcontainer import for now to fix deployment
 // import { getWebContainer } from '../config/webcontainer'
 import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css'
@@ -384,15 +384,20 @@ const Project = () => {
     useEffect(() => {
         const socket = initializeSocket(project._id)
 
+        // Webcontainer removed for deployment
+        // Mock webContainer with empty object for deployment
         if (!webContainer) {
-            // Dynamic import to avoid build issues
-            import('../config/webcontainer.js').then(module => {
-                module.getWebContainer().then(container => {
-                    setWebContainer(container)
-                })
-            }).catch(err => {
-                console.error("Error initializing container:", err)
-                addToLogs(`❌ Error initializing WebContainer: ${err.message}`)
+            setWebContainer({
+                mount: async () => console.log('Mock mount'),
+                spawn: async () => ({
+                    output: { pipeTo: () => {} },
+                    exit: Promise.resolve(0)
+                }),
+                on: (event, callback) => {
+                    if (event === 'server-ready') {
+                        setTimeout(() => callback(3000, 'http://localhost:3000'), 1000)
+                    }
+                }
             })
         }
 

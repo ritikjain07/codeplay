@@ -189,10 +189,19 @@ const SimpleProject = () => {
     useEffect(() => {
         const init = async () => {
             try {
-                // Initialize WebContainer with dynamic import
-                const webcontainerModule = await import('../config/webcontainer.js')
-                const container = await webcontainerModule.getWebContainer()
-                setWebContainer(container)
+                // Mock webContainer with empty object for deployment
+                setWebContainer({
+                    mount: async () => console.log('Mock mount'),
+                    spawn: async () => ({
+                        output: { pipeTo: () => {} },
+                        exit: Promise.resolve(0)
+                    }),
+                    on: (event, callback) => {
+                        if (event === 'server-ready') {
+                            setTimeout(() => callback(3000, 'http://localhost:3000'), 1000)
+                        }
+                    }
+                })
                 
                 // Initialize Socket
                 initializeSocket(project._id)
